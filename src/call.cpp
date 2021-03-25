@@ -2694,17 +2694,18 @@ char* call::createSendingMessage(SendingMessage *src, int P_index, char *msg_buf
             if (begin == msg_buffer) {
                 ERROR("Can not find beginning of a line for the media port!\n");
             }
+            uint16_t ne_port = htons((uint16_t)(port & 0xFFFF));
             if (strstr(begin, "audio")) {
                 if (media_ip_is_ipv6) {
-                    (_RCAST(struct sockaddr_in6 *, &(play_args_a.from)))->sin6_port = htons((uint16_t)(port & 0xFFFF));
+                    (_RCAST(struct sockaddr_in6 *, &(play_args_a.from)))->sin6_port = ne_port;
                 } else {
-                    (_RCAST(struct sockaddr_in *, &(play_args_a.from)))->sin_port = htons((uint16_t)(port & 0xFFFF));
+                    (_RCAST(struct sockaddr_in *, &(play_args_a.from)))->sin_port = ne_port;
                 }
             } else if (strstr(begin, "video")) {
                 if (media_ip_is_ipv6) {
-                    (_RCAST(struct sockaddr_in6 *, &(play_args_v.from)))->sin6_port = port;
+                    (_RCAST(struct sockaddr_in6 *, &(play_args_v.from)))->sin6_port = ne_port;
                 } else {
-                    (_RCAST(struct sockaddr_in *, &(play_args_v.from)))->sin_port = port;
+                    (_RCAST(struct sockaddr_in *, &(play_args_v.from)))->sin_port = ne_port;
                 }
             } else {
                 // This check will not do, as we use the media_port in other places too.
