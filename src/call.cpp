@@ -807,7 +807,7 @@ call *call::add_call(int userId, bool ipv6, struct sockaddr_storage *dest)
 {
     static char call_id[MAX_HEADER_LEN];
 
-    const char * src = call_id_string;
+    const char * src = call_id_string; // 定义call_id的格式%u-%p@%s, 即序号-进程号@本地ip
     int count = 0;
 
     if(!next_number) {
@@ -2696,9 +2696,9 @@ char* call::createSendingMessage(SendingMessage *src, int P_index, char *msg_buf
             }
             if (strstr(begin, "audio")) {
                 if (media_ip_is_ipv6) {
-                    (_RCAST(struct sockaddr_in6 *, &(play_args_a.from)))->sin6_port = port;
+                    (_RCAST(struct sockaddr_in6 *, &(play_args_a.from)))->sin6_port = htons((uint16_t)(port & 0xFFFF));
                 } else {
-                    (_RCAST(struct sockaddr_in *, &(play_args_a.from)))->sin_port = port;
+                    (_RCAST(struct sockaddr_in *, &(play_args_a.from)))->sin_port = htons((uint16_t)(port & 0xFFFF));
                 }
             } else if (strstr(begin, "video")) {
                 if (media_ip_is_ipv6) {
